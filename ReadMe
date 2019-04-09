@@ -1,1 +1,7 @@
+This repository is not meant to function in any way whatsoever. 
+Rather, the purpose of this repository is to act as a store-house for any relevant code and structures
+for Deep Learning Applications. As such, each file will not function by itself.
 
+Each file will contain a description of the code that it contains as well as the code itself.
+Code is intended for use in computer vision and image processing.
+If used for practical application, code will need to be modified to fit incident data structures and desired output.
