@@ -95,7 +95,8 @@ plt.ylabel('Training Error')
 ## Medical Dataset - Classification task with cross-entropy and softmax
 
 def ce_loss(out, target):
-    ##Calculates the Cross Entropy loss b/w output vector and target vector.
+    ##Calculates the Cross Entropy loss b/w output vector and target vector that will bu used for this 
+    # section of the assignment
     lossmatrix=-target@np.log(out).T
     loss = np.sum(np.diag(lossmatrix))/len(lossmatrix)
     return loss
@@ -104,7 +105,9 @@ learning_rate = 0.01
 batch_size = 50
 n_epochs = 100
 
-##your code starts here#
+##This block is another training block intended to train another, similar fully connected layer.
+# the intent of this exercise was to be able to track and save your best model so that you could plot 
+# the progress of training
 errortracker=[]
 for hidden_nodes in range(1,51):
     parameters_two_layer_regression=initialize_parameters_ex2(train_data_ex3.shape[1],hidden_nodes,train_labels_ex3.shape[1])
@@ -117,7 +120,6 @@ for hidden_nodes in range(1,51):
             input_this_batch = train_data_ex3[batch,:]
             gt_this_batch =  train_labels_ex3[batch,:]
             #use you function run_batch_sgd to update the parameters
-            ##your code starts here
             parameters_two_layer_regression=run_batch_sgd(two_layer_network_softmax_ce_backward, parameters_two_layer_regression, learning_rate, input_this_batch,gt_this_batch)
     model=two_layer_network_softmax_forward(val_data_ex3, parameters_two_layer_regression)
     if hidden_nodes==1:
@@ -141,4 +143,3 @@ plt.xlabel('Number of Hidden Nodes')
 #A test of my best model
 modeltest = two_layer_network_softmax_forward(test_data_ex3, bestmodel)
 print('The best model that I generated has ' + str(100*count_correct_predictions(modeltest, test_labels_ex3)/len(test_labels_ex3)) + '% error when compared to the test data.')
-##your code ends here
