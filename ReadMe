@@ -5,3 +5,5 @@ for Deep Learning Applications. As such, each file will not function by itself.
 Each file will contain a description of the code that it contains as well as the code itself.
 Code is intended for use in computer vision and image processing.
 If used for practical application, code will need to be modified to fit incident data structures and desired output.
+
+***Anything deposited in this repository is not expected to run without modification to fit relevant dataset***

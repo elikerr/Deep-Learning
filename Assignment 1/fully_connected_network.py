@@ -107,7 +107,7 @@ n_epochs = 100
 
 ##This block is another training block intended to train another, similar fully connected layer.
 # the intent of this exercise was to be able to track and save your best model so that you could plot 
-# the progress of training
+# the improvement of the model through each epoch
 errortracker=[]
 for hidden_nodes in range(1,51):
     parameters_two_layer_regression=initialize_parameters_ex2(train_data_ex3.shape[1],hidden_nodes,train_labels_ex3.shape[1])
@@ -143,3 +143,71 @@ plt.xlabel('Number of Hidden Nodes')
 #A test of my best model
 modeltest = two_layer_network_softmax_forward(test_data_ex3, bestmodel)
 print('The best model that I generated has ' + str(100*count_correct_predictions(modeltest, test_labels_ex3)/len(test_labels_ex3)) + '% error when compared to the test data.')
+
+
+def l2_regularization_backward(inputs, parameters, gt):
+    # computes the L2 Regularization loss gradient for each parameter in our model.
+    gradients = {}
+    for parameter_name in parameters.keys():
+        if 'weights' in parameter_name:
+            # complete the equation to calculate the l2 regularization loss gradient for weights
+            gradients[parameter_name] = 2*parameters[parameter_name]
+        elif 'bias' in parameter_name:
+            # L2 regularization loss for bias is 0.
+            gradients[parameter_name] = 0*parameters[parameter_name]
+    return gradients
+
+def run_batch_sgd2(backward_function, parameters, learning_rate, inputs, targets, reg_weight):
+    #calculates gradients and updates parameters using sgd update rule
+    gradient=backward_function(inputs,parameters, targets, reg_weight)
+    updated_parameters={
+            'weights_1': parameters['weights_1']-learning_rate*gradient['weights_1'],
+            'bias_1': parameters['bias_1']-learning_rate*gradient['bias_1'],
+            'weights_2':parameters['weights_2']-learning_rate*gradient['weights_2'], 
+            'bias_2':parameters['bias_2']-learning_rate*gradient['bias_2']
+            }
+    return updated_parameters
+
+
+##Another training block. the goal of this block was to determine the effect that the regularization weight has
+# on the number of parameters and accuracy of our resulting model.
+n_hidden_nodes = 200
+
+learning_rate = 0.01
+batch_size = 50
+n_epochs = 100
+
+errortracker=[]
+parameters_two_layer_regression=initialize_parameters_ex2(x_ex4_train.shape[1],n_hidden_nodes,y_ex4_train.shape[1])
+for reg_weight in range(1,101):
+    for epoch in range(n_epochs):
+            shuffled_indexes = (np.arange(x_ex4_train.shape[0]))
+            np.random.shuffle(shuffled_indexes)
+            shuffled_indexes = shuffled_indexes.reshape([-1, batch_size])
+            for batch_i in range(shuffled_indexes.shape[1]):
+                batch = shuffled_indexes[:,batch_i]
+                input_this_batch = x_ex4_train[batch,:]
+                gt_this_batch =  y_ex4_train[batch,:]
+                #use you function run_batch_sgd to update the parameters
+                parameters_two_layer_regression=run_batch_sgd2(two_layer_network_ce_and_l2_regularization_backward, parameters_two_layer_regression, learning_rate, input_this_batch,gt_this_batch,reg_weight/1000.)
+    model=two_layer_network_softmax_forward(x_ex4_val,parameters_two_layer_regression)
+    if reg_weight==1:
+        bestmodel=parameters_two_layer_regression
+        old = count_correct_predictions(model,y_ex4_val)
+        errortracker.append(old)
+    else:
+        new = count_correct_predictions(model,y_ex4_val)
+        errortracker.append(new)
+        if old < new:
+            bestmodel=parameters_two_layer_regression
+            old=new
+
+        else:
+            pass
+plt.plot([x/1000. for x in range(1,101)],errortracker)
+plt.xlabel('regularization parameter')
+plt.ylabel('Number of correct predictions')
+
+#A test of my best model
+modeltest=two_layer_network_softmax_forward(x_ex4_test,bestmodel)
+print('My best model has '+str(count_correct_predictions(modeltest,y_ex4_test)/len(y_ex4_test))+'% accuracy when compared to the test data.')

@@ -1,0 +1,6 @@
+The files in this folder pertain to Assignment 2
+
+In this assignment we are exploring deep learning architectures and the effect that
+modifying architecture and/or hyerparameters can have on a models training and accuracy.
+The dataset that we used for this assignment was a set of chest xray images as well as a vector
+describing any diagnoses associated with those images. 

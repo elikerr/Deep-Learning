@@ -79,4 +79,3 @@ plt.ylabel('MSE');
 plt.plot(sqerrorvalidation, 'r',label='validation')
 plt.legend()
 
-
